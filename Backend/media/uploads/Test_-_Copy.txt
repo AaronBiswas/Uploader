@@ -1,0 +1,43 @@
+import java.util.*;
+
+class member{
+
+	String name;
+	int age;
+	int salary;
+	void printSalary(int sal)
+	{
+		salary = sal;
+		System.out.println(salary);
+	}
+}
+class employee extends member{
+	String dept;
+}
+class Test{
+public static void main(String[] args)
+{
+	member mem = new member();
+	int n,i;
+	Scanner in = new Scanner(System.in);
+	System.out.println("enter no of emp");
+	n = in.nextInt();
+	employee[] emp = new employee[10];
+	System.out.println("enter details");
+	for( i = 0; i < 2 ; i++);
+	{
+		emp[i].name = in.next();
+		emp[i].age = in.nextInt();
+		emp[i].salary = in.nextInt();
+	}
+int age;
+System.out.println("enter age");
+age = in.nextInt();
+for( i = 0; i<2;i++)
+{
+	if(age == emp[i].age)
+	mem.printSalary(emp[i].salary);
+}
+}
+
+}

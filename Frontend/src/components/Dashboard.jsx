@@ -1,85 +1,118 @@
-import React, { useEffect, useState } from "react";
-import { fetchFiles } from "../services/api";
-import { useNavigate } from "react-router-dom";
-import { logout } from "../services/auth";
-import Navbar from "./Navbar";
+import React, { useState, useEffect } from 'react';
+import { fetchDashboardStats } from '../services/api';
+import Navbar from './Navbar';
 
 const Dashboard = () => {
-  const [files, setFiles] = useState([]);
-  const navigate = useNavigate();
+    const [stats, setStats] = useState({
+        total_files: 0,
+        file_types: [],
+        user_uploads: []
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetchFiles().then(setFiles).catch(() => navigate("/"));
-  }, []);
+    useEffect(() => {
+        loadDashboardStats();
+    }, []);
 
-  const getFileType = (filename) => {
-    const ext = filename.split('.').pop().toLowerCase();
-    switch(ext) {
-      case 'pdf': return 'PDF';
-      case 'xlsx':
-      case 'xls': return 'Excel';
-      case 'txt': return 'Text';
-      case 'docx':
-      case 'doc': return 'Word';
-      default: return 'Other';
-    }
-  };
+    const loadDashboardStats = async () => {
+        try {
+            setLoading(true);
+            const data = await fetchDashboardStats();
+            setStats(data);
+            setError(null);
+        } catch (err) {
+            setError('Failed to load dashboard statistics');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-  const fileTypeCounts = files.reduce((acc, file) => {
-    const type = getFileType(file.file.split('/').pop());
-    acc[type] = (acc[type] || 0) + 1;
-    return acc;
-  }, {});
-
-  return (
-    <>
-    <Navbar />
-    <div className="min-h-screen bg-base-200 flex flex-col items-center pt-10">
-      <div className="card w-96 bg-base-100 shadow-xl p-6">
-        <h2 className="text-center text-2xl font-bold">Dashboard</h2>
-        <div className="flex justify-between items-center mt-4">
-          <p>Total Files: {files.length}</p>
-          <button 
-            className="btn btn-secondary" 
-            onClick={() => { logout(); navigate("/"); }}
-          >
-            Logout
-          </button>
-        </div>
-
-        <div className="mt-4">
-          <h3 className="text-xl font-semibold mb-2">File Type Breakdown</h3>
-          {Object.entries(fileTypeCounts).map(([type, count]) => (
-            <div key={type} className="flex justify-between p-2 bg-base-200 rounded mt-1">
-              <span>{type} Files:</span>
-              <span className="font-bold">{count}</span>
+    if (loading) return (
+        <>
+            <Navbar />
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="loading loading-spinner loading-lg"></div>
             </div>
-          ))}
-        </div>
+        </>
+    );
 
-        <ul className="mt-4 space-y-2">
-          {files.map((file) => (
-            <li 
-              key={file.id} 
-              className="text-blue-500 hover:underline flex justify-between items-center"
-            >
-              <a 
-                href={`http://127.0.0.1:8000${file.file}`} 
-                download
-                className="truncate"
-              >
-                {file.file.split('/').pop()}
-              </a>
-              <span className="text-xs text-gray-500">
-                {getFileType(file.file.split('/').pop())}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </div>
-    </>
-  );
+    return (
+        <>
+            <Navbar />
+            <div className="min-h-screen bg-base-200 flex flex-col items-center pt-10">
+                <div className="card w-96 bg-base-100 shadow-xl p-6">
+                    <h2 className="text-2xl font-bold text-center mb-6">Dashboard</h2>
+
+                    {error && (
+                        <div className="alert alert-error mb-4">
+                            <span>{error}</span>
+                        </div>
+                    )}
+
+                    {/* Total Files Card */}
+                    <div className="stats shadow mb-6">
+                        <div className="stat">
+                            <div className="stat-title">Total Files</div>
+                            <div className="stat-value text-primary">{stats.total_files}</div>
+                        </div>
+                    </div>
+
+                    {/* File Types Breakdown */}
+                    <div className="mb-6">
+                        <h3 className="text-xl font-semibold mb-4">File Types</h3>
+                        <div className="space-y-3">
+                            {stats.file_types.map((type, index) => (
+                                <div key={index} className="bg-base-200 p-3 rounded">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <span className="font-medium">
+                                            {type.file_type.toUpperCase()}
+                                        </span>
+                                        <span className="badge badge-primary">
+                                            {type.count} files
+                                        </span>
+                                    </div>
+                                    <progress 
+                                        className="progress progress-primary w-full" 
+                                        value={(type.count / stats.total_files) * 100} 
+                                        max="100"
+                                    ></progress>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* User Upload Stats */}
+                    <div>
+                        <h3 className="text-xl font-semibold mb-4">User Upload Stats</h3>
+                        <div className="overflow-x-auto">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>User</th>
+                                        <th>Files</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {stats.user_uploads.map((user, index) => (
+                                        <tr key={index}>
+                                            <td>{user.username}</td>
+                                            <td>
+                                                <span className="badge badge-ghost">
+                                                    {user.upload_count} files
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
 };
 
 export default Dashboard;

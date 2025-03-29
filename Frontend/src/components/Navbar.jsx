@@ -1,7 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
 import profilePic from "../assets/profile_picture.jpg";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    toast.info('Logged out successfully');
+    navigate("/");
+  };
+
   return (
     <div>
       <div className="navbar bg-base-100 shadow-sm">
@@ -38,7 +48,7 @@ const Navbar = () => {
                 <a href="/dashboard">Dashboard</a>
               </li>
               <li>
-                <a href="/">Logout</a>
+                <a onClick={handleLogout} style={{ cursor: 'pointer' }}>Logout</a>
               </li>
             </ul>
           </div>
