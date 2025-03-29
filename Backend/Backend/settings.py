@@ -4,9 +4,9 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-ml1im(vsu)9=u1%peaw@o!(=$5#a==h(8#df4_70po2bmq&%#w')
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-ALLOWED_HOSTS = ['*']  # Replace with your Render domain when deployed
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-ml1im(vsu)9=u1%peaw@o!(=$5#a==h(8#df4_70po2bmq&%#w')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False') == 'True'
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']  # Allows Render domains
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -74,12 +74,12 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'dist'),
 ]
-
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
@@ -95,6 +95,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # CORS settings - Update for production
 CORS_ALLOWED_ORIGINS = [
-    "https://your-render-frontend-domain.onrender.com",  # Update with your actual domain
+    "http://localhost:3000",
+    "https://your-render-frontend-domain.onrender.com",  # Update with your actual frontend domain
 ]
 CORS_ALLOW_CREDENTIALS = True
