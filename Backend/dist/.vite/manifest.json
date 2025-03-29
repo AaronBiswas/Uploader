@@ -1,0 +1,18 @@
+{
+  "index.html": {
+    "file": "assets/index-Co9rx36V.js",
+    "name": "index",
+    "src": "index.html",
+    "isEntry": true,
+    "css": [
+      "assets/index-DC67__Iu.css"
+    ],
+    "assets": [
+      "assets/profile_picture-pYsBdi3e.jpg"
+    ]
+  },
+  "src/assets/profile_picture.jpg": {
+    "file": "assets/profile_picture-pYsBdi3e.jpg",
+    "src": "src/assets/profile_picture.jpg"
+  }
+}
