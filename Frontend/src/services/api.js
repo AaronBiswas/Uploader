@@ -1,7 +1,10 @@
 import axios from "axios";
 import { axiosAuth } from "./auth";
 
-const API_URL = "http://127.0.0.1:8000/api/";
+// Use relative URL in production, absolute URL in development
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? "http://127.0.0.1:8000/api/" 
+    : "https://uploader-ylgd.onrender.com/api/";
 
 // File Management
 export const fetchFiles = async () => {
