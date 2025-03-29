@@ -77,10 +77,18 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'dist'),
-]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# CORS settings - Update for production
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://uploader-ylgd.onrender.com",  # Your backend domain
+]
+CORS_ALLOW_CREDENTIALS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -89,13 +97,3 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-# CORS settings - Update for production
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://your-render-frontend-domain.onrender.com",  # Update with your actual frontend domain
-]
-CORS_ALLOW_CREDENTIALS = True
