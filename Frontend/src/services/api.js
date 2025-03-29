@@ -1,12 +1,12 @@
 import axios from "axios";
 import { axiosAuth } from "./auth";
 
-// Use relative URL in production, absolute URL in development
+// API URL
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? "http://127.0.0.1:8000/api/" 
     : "https://uploader-ylgd.onrender.com/api/";
 
-// File Management
+// Files
 export const fetchFiles = async () => {
     const response = await axiosAuth.get(`${API_URL}files/`);
     return response.data;
@@ -14,14 +14,13 @@ export const fetchFiles = async () => {
 
 export const uploadFile = async (file, onProgress) => {
     const formData = new FormData();
-    formData.append('file', file, file.name);  // Added file.name as third parameter
+    formData.append('file', file, file.name);
     
     const config = {
         headers: {
             'Content-Type': 'multipart/form-data',
             'Accept': 'application/json',
         },
-        // Add onUploadProgress for tracking upload progress
         onUploadProgress: (progressEvent) => {
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
             if (onProgress) {
@@ -39,7 +38,7 @@ export const deleteFile = async (fileId) => {
     return response.data;
 };
 
-// Address Management
+// Addresses
 export const fetchAddresses = async () => {
     const response = await axiosAuth.get(`${API_URL}addresses/`);
     return response.data;
@@ -67,7 +66,7 @@ export const setPrimaryAddress = async (addressId) => {
     return response.data;
 };
 
-// Dashboard Statistics
+// Dashboard
 export const fetchDashboardStats = async () => {
     const response = await axiosAuth.get(`${API_URL}dashboard/`);
     return response.data;

@@ -1,21 +1,20 @@
 import axios from "axios";
 
-// Use relative URL in production, absolute URL in development
+// API URL
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? "http://127.0.0.1:8000/api/" 
     : "https://uploader-ylgd.onrender.com/api/";
 
-// Create an axios instance for authenticated requests
+// Auth instance
 export const axiosAuth = axios.create();
 
-// Authentication
+// Auth
 export const login = async (username, password) => {
     const response = await axios.post(`${API_URL}token/`, { username, password });
     const { access, refresh } = response.data;
     localStorage.setItem("token", access);
     localStorage.setItem("refresh_token", refresh);
     
-    // Set the default Authorization header for future requests
     axiosAuth.defaults.headers.common["Authorization"] = `Bearer ${access}`;
     
     return response.data;
@@ -36,7 +35,6 @@ export const refreshToken = async () => {
     const { access } = response.data;
     localStorage.setItem("token", access);
     
-    // Update the Authorization header
     axiosAuth.defaults.headers.common["Authorization"] = `Bearer ${access}`;
     
     return access;
@@ -48,7 +46,6 @@ export const getToken = () => localStorage.getItem("token");
 export const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("refresh_token");
-    // Clear the Authorization header
     delete axiosAuth.defaults.headers.common["Authorization"];
 };
 
@@ -82,7 +79,6 @@ axiosAuth.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
         
-        // If error is 401 and we haven't tried to refresh the token yet
         if (error.response?.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;
             
@@ -93,7 +89,6 @@ axiosAuth.interceptors.response.use(
                     return axiosAuth(originalRequest);
                 }
             } catch (refreshError) {
-                // If refresh token fails, log out the user
                 logout();
                 return Promise.reject(refreshError);
             }
