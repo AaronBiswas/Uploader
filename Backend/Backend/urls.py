@@ -1,7 +1,9 @@
 from django.contrib import admin
-from django.urls import path, include  # <- Add 'include' here
+from django.urls import path, include
+from django.views.generic import RedirectView
 
 urlpatterns = [
+    path('', RedirectView.as_view(url='/api/', permanent=True)),
     path('admin/', admin.site.urls),
-    path('api/', include('api.urls')),  # Ensure this line is here
+    path('api/', include('api.urls')),
 ]

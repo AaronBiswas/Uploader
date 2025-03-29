@@ -86,9 +86,32 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # CORS settings - Update for production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://uploader-ylgd.onrender.com",  # Your backend domain
+    "http://localhost:5173",  # Vite default development port
+    "https://uploader-ylgd.onrender.com",
 ]
 CORS_ALLOW_CREDENTIALS = True
+
+# Additional CORS settings
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
